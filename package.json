@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "electron": "^37.2.5",
+    "puppeteer": "^24.15.0"
+  },
+  "scripts": {
+  "start": "electron .",
+  "dev": "nodemon --exec electron ."
+},
+"main": "main.js"
+}

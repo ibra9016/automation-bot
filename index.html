@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bot GUI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 1rem;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+
+    .row > div {
+      flex: 1;
+    }
+
+    .phone-input {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .phone-input span {
+      padding: 10px;
+      background-color: #eee;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .phone-input input {
+      flex: 1;
+    }
+
+    .phone-input img {
+      width: 24px;
+      height: 18px;
+      border-radius: 2px;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.7rem;
+      font-size: 1.1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .form-section {
+  margin-top: 1.5rem;
+  padding: 0.5rem 0;
+}
+
+.form-section h2 {
+  margin-bottom: 0.8rem;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.form-section label {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-section input, .form-section select {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.form-section input:focus, .form-section select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.form-section .row {
+  display: flex;
+  gap: 6px;
+}
+
+.form-section .row > div {
+  flex: 1;
+}
+
+.form-section .phone-input {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.form-section .phone-input span {
+  padding: 0.6rem;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  color: #333;
+}
+
+.form-section .phone-input input {
+  flex: 1;
+  padding: 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.form-section .phone-input img {
+  width: 22px;
+  height: 16px;
+  border-radius: 2px;
+}
+
+.form-section .error-message {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-section .error input, 
+.form-section .error select {
+  border-color: red !important;
+}
+  </style>
+</head>
+<body>
+  <h2>ShopNiceKicks Order Form</h2>
+  <form id="orderForm">
+
+    <label for="productUrl">Product URL</label>
+    <input type="url" id="productUrl" name="productUrl" placeholder="https://shopnicekicks.com/..." required />
+
+    <label for="shoeSize">Shoe Size (Men’s / Women’s)</label>
+    <select id="shoeSize" name="shoeSize" required>
+      <option value="">Select Size</option>
+      <option value="0">M7 / W8.5</option>
+      <option value="1">M7.5 / W9</option>
+      <option value="2">M8 / W9.5</option>
+      <option value="3">M8.5 / W10</option>
+      <option value="4">M9 / W10.5</option>
+      <option value="5">M9.5 / W11</option>
+      <option value="6">M10 / W11.5</option>
+      <option value="7">M10.5 / W12</option>
+      <option value="8">M11 / W12.5</option>
+      <option value="9">M11.5 / W13</option>
+      <option value="10">M12 / W13.5</option>
+      <option value="11">M13 / W14.5</option>
+      <option value="12">M13.5 / W15</option>
+      <option value="13">M14 / W15.5</option>
+      <option value="14">M15 / W16.5</option>
+      <option value="15">M16 / W17.5</option>
+      <option value="16">M17 / W19.5</option>
+      <option value="17">M18 / W19.5</option>
+    </select>
+
+    <!-- Delivery Section -->
+    <div class="form-section">
+  <h2>Address</h2>
+
+  <div class="row">
+    <div>
+      <label>First name</label>
+      <input id="firstName" type="text" placeholder="First name" required />
+    </div>
+    <div>
+      <label>Last name</label>
+      <input id="lastName" type="text" placeholder="Last name" required />
+    </div>
+  </div>
+
+  <label for="email">Email</label>
+  <input id="email" type="email" placeholder="Email address" required />
+
+
+  <label>Address</label>
+  <input id="address" type="text" placeholder="Address" required />
+
+  <label>Apartment, suite, etc. (optional)</label>
+  <input type="text" id="optionalAddress" />
+
+  <div class="row">
+    <div>
+      <label>City</label>
+      <input id="city" type="text" placeholder="City" required />
+    </div>
+    <div>
+      <label>State</label>
+      <select required id="state">
+        <option selected>Alabama</option>
+        <option value="FL">Florida</option>
+        <option value="CA">California</option>
+        <option value="NY">New York</option>
+      </select>
+    </div>
+    <div>
+      <label>ZIP code</label>
+      <input id="postal" type="text" placeholder="ZIP code" required />
+      <!-- Example error message -->
+      <!-- <div class="error-message">Enter a ZIP / postal code</div> -->
+    </div>
+  </div>
+
+  <label>Phone</label>
+  <div class="phone-input">
+    <span>+1</span>
+    <input id="phoneNb" type="text" placeholder="Phone number" required />
+    <img src="https://flagcdn.com/us.svg" alt="flag" />
+  </div>
+</div>
+
+    <!-- Payment Section -->
+    <label for="cardNumber">Card Number</label>
+    <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" pattern="\d{13,19}" maxlength="19" required />
+
+    <label for="cardExpiry">Expiry Date (MM/YY)</label>
+    <input type="text" id="cardExpiry" name="cardExpiry" placeholder="MM/YY" pattern="(0[1-9]|1[0-2])\/?([0-9]{2})" maxlength="5" required />
+
+    <label for="cardCVC">CVC</label>
+    <input type="text" id="cardCVC" name="cardCVC" placeholder="123" pattern="\d{3,4}" maxlength="4" required />
+
+    <button type="submit" id="submitBtn" onclick="collectFormData()">Submit Order</button>
+  </form>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
