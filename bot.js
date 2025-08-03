@@ -23,8 +23,6 @@ exports.getAvailableSizes = async (productUrl)=> {
       value: label.getAttribute('for')
     }))
 );
-  console.log(sizes);
-
   // Send to renderer via IPC
   if (winRef) {
     winRef.webContents.send('available-sizes', sizes);
