@@ -44,13 +44,13 @@ function logWithTimestamp(message) {
 
 
 exports.runScript = async(formData)=>{
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
+  logWithTimestamp("Adding item to cart....");
 
   await page.goto(formData.productUrl);
    start = performance.now();
-   logWithTimestamp("Adding item to cart....");
-
+   
   await page.waitForSelector('label[for="'+formData.shoeSize+'"]');
 
 // Click the element
