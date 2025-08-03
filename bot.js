@@ -24,7 +24,6 @@ exports.getAvailableSizes = async (productUrl)=> {
     }))
 );
 
-console.log(sizes);
   // Send to renderer via IPC
   if (winRef) {
     winRef.webContents.send('available-sizes', sizes);
