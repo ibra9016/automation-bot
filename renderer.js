@@ -1,6 +1,37 @@
 const { exec } = require('child_process');
-const runbot = require("./bot.js");
-const runScript = require('./bot.js');
+const { ipcRenderer } = require('electron');
+let loadmessage = document.getElementById('loadingMessage');
+
+ipcRenderer.on('bot-message', (event, message) => {
+  displayLog(message);
+});
+
+ipcRenderer.on('available-sizes', (event, sizes) => {
+  const select = document.getElementById('shoeSize');
+  
+  sizes.forEach(size => {
+    const option = document.createElement('option');
+    option.value = size.value;
+    option.textContent = size.label;
+    select.appendChild(option);
+  });
+  select.disabled = false;
+  loadmessage.style.display = 'none';
+});
+
+function displayLog(message) {
+
+  // Get the container element where you want to add the log messages
+  const logContainer = document.getElementById('log-output');
+
+  // Create a new div element
+  const logEntry = document.createElement('div');
+  logEntry.textContent = message;
+  logEntry.className = "log-entry"; // Add a class for styling
+
+  // Append the new div to the container
+  logContainer.appendChild(logEntry);
+}
 
 function collectFormData() {
     
@@ -37,15 +68,15 @@ function collectFormData() {
     expiry,
     verification_value
    };
-
-   console.log(formData)
-   runScript(formData)
-    .then(() => console.log('Bot finished successfully'))
-    .catch(err => console.error('Bot error:', err));
+ 
+   ipcRenderer.send('run-bot-script', formData);
+   form.style.display = 'none';
+   log.style.display = 'block';
 }
 
-const form = document.getElementById('orderForm');
+  const form = document.getElementById('orderForm');
   const submitBtn = document.getElementById('submitBtn');
+  const log = document.getElementById("log-output");
 
   // Enable/disable button based on form validity
   function toggleButton() {
@@ -61,3 +92,14 @@ const form = document.getElementById('orderForm');
 form.addEventListener('submit',(e)=>{
     e.preventDefault();
 })
+
+document.getElementById('productUrl').addEventListener('paste', (event) => {
+  loadmessage.style.display = 'block';
+  
+  setTimeout(() => {
+    const url = event.target.value;
+    console.log("Pasted URL:", url);
+    
+    ipcRenderer.send('run-size-search', url);
+  }, 50); // Delay to ensure the pasted value is available
+});

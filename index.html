@@ -3,6 +3,28 @@
 <head>
   <title>Bot GUI</title>
   <style>
+
+    #log-output {
+      margin-top: 2rem;
+      background-color: #2b2b2b;
+      color: #b3c2c7;
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: monospace;
+      height: 300px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .log-entry {
+      padding: 5px 0;
+      border-bottom: 1px solid #444;
+    }
+
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+
     body {
       font-family: Arial, sans-serif;
       max-width: 600px;
@@ -168,6 +190,45 @@
 .form-section .error select {
   border-color: red !important;
 }
+
+ #loadingMessage {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 25px 40px;
+  border-radius: 10px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  z-index: 9999;
+  min-width: 180px;
+  text-align: center; /* Center text within its own container */
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; /* Center items (text and spinner) horizontally */
+  gap: 15px;
+}
+
+.loader {
+  position: relative;
+  left: 60px;
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #3498db;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
   </style>
 </head>
 <body>
@@ -176,28 +237,16 @@
 
     <label for="productUrl">Product URL</label>
     <input type="url" id="productUrl" name="productUrl" placeholder="https://shopnicekicks.com/..." required />
+    
+    <div id="loadingMessage" style="display:none;">
+      <p>Getting sizes...</p>
+      <div class="loader"></div>
+    </div>
+    <label for="shoeSize">Available Shoe Size (Men’s / Women’s)</label>
+    <select id="shoeSize" name="shoeSize" disabled required>
 
-    <label for="shoeSize">Shoe Size (Men’s / Women’s)</label>
-    <select id="shoeSize" name="shoeSize" required>
       <option value="">Select Size</option>
-      <option value="0">M7 / W8.5</option>
-      <option value="1">M7.5 / W9</option>
-      <option value="2">M8 / W9.5</option>
-      <option value="3">M8.5 / W10</option>
-      <option value="4">M9 / W10.5</option>
-      <option value="5">M9.5 / W11</option>
-      <option value="6">M10 / W11.5</option>
-      <option value="7">M10.5 / W12</option>
-      <option value="8">M11 / W12.5</option>
-      <option value="9">M11.5 / W13</option>
-      <option value="10">M12 / W13.5</option>
-      <option value="11">M13 / W14.5</option>
-      <option value="12">M13.5 / W15</option>
-      <option value="13">M14 / W15.5</option>
-      <option value="14">M15 / W16.5</option>
-      <option value="15">M16 / W17.5</option>
-      <option value="16">M17 / W19.5</option>
-      <option value="17">M18 / W19.5</option>
+      
     </select>
 
     <!-- Delivery Section -->
@@ -289,8 +338,7 @@
     <div>
       <label>ZIP code</label>
       <input id="postal" type="text" placeholder="ZIP code" required />
-      <!-- Example error message -->
-      <!-- <div class="error-message">Enter a ZIP / postal code</div> -->
+      
     </div>
   </div>
 
@@ -314,6 +362,8 @@
 
     <button type="submit" id="submitBtn" onclick="collectFormData()">Submit Order</button>
   </form>
+
+  <div id="log-output"></div>
 
   <script src="renderer.js"></script>
 </body>

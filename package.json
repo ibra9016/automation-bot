@@ -1,11 +1,12 @@
 {
   "dependencies": {
     "electron": "^37.2.5",
-    "puppeteer": "^24.15.0"
+    "puppeteer": "^24.15.0",
+    "ws": "^8.18.3"
   },
   "scripts": {
-  "start": "electron .",
-  "dev": "nodemon --exec electron ."
-},
-"main": "main.js"
+    "start": "electron .",
+    "dev": "nodemon --exec electron ."
+  },
+  "main": "main.js"
 }

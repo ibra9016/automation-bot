@@ -1,9 +1,9 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow , ipcMain} = require('electron');
 const path = require('path');
-const runbot = require("./bot.js");
-
+const bot = require("./bot.js");
+let win;
 function createWindow () {
-  const win = new BrowserWindow({
+   win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -13,6 +13,28 @@ function createWindow () {
   });
 
   win.loadFile('index.html');
+
+  bot.setWindow(win);
 }
 
 app.whenReady().then(createWindow);
+
+ipcMain.on('run-bot-script', (event, formData) => {
+  bot.runScript(formData)
+    .then(() => {
+      event.sender.send('bot-status', 'Bot finished successfully');
+    })
+    .catch(err => {
+      event.sender.send('bot-status', `Bot error: ${err.message || err}`);
+    });
+});
+
+  ipcMain.on('run-size-search',(event,url)=>{
+    bot.getAvailableSizes(url)
+    .then(() => {
+      event.sender.send('bot-status', 'search finished successfully');
+    })
+    .catch(err => {
+      event.sender.send('bot-status', `Bot error: ${err.message || err}`);
+    });
+  })

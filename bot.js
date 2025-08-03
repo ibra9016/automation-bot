@@ -1,16 +1,56 @@
 const puppeteer = require('puppeteer');
+const { finished } = require('responselike');
+let taskSpeed;
+let start;
+let winRef;
 
-async function runScript(formData) {
-  console.log('Bot received:', formData);
+exports.setWindow = (win) => {
+  winRef = win;
+};
 
+exports.getAvailableSizes = async (productUrl)=> {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+
+  await page.goto(productUrl);
+  await page.waitForSelector('label.SizeSwatch');
+
+  const sizes = await page.$$eval('label.SizeSwatch', labels =>
+  labels
+    .filter(label => !label.classList.contains('gb-change-color'))
+    .map(label => ({
+      label: label.textContent.trim(),
+      value: label.getAttribute('for')
+    }))
+);
+  console.log(sizes);
+
+  // Send to renderer via IPC
+  if (winRef) {
+    winRef.webContents.send('available-sizes', sizes);
+  }
+
+  await browser.close();
+}
+
+function logWithTimestamp(message) {
+  if (!winRef) {
+    return;}; // no window to send to yet
+  const timestamp = new Date().toLocaleTimeString();
+  const fullMessage = `${timestamp}: ${message}`;
+
+  winRef.webContents.send('bot-message', fullMessage);
+};
+
+
+
+exports.runScript = async(formData)=>{
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
   await page.goto(formData.productUrl);
-  console.log(`Navigated to ${formData.productUrl}`);
-
-  // Use other formData fields here
-  console.log('label[for="option-0-'+formData.shoeSize+'"]');
+   start = performance.now();
+   logWithTimestamp("Adding item to cart....");
 
   await page.waitForSelector('label[for="option-0-'+formData.shoeSize+'"]');
 
@@ -19,15 +59,17 @@ async function runScript(formData) {
 
     await page.click(".ProductForm__AddToCart");
 
-    await page.waitForSelector('[name="checkout"]')
+    logWithTimestamp("Going to checkout page...");
+
+    await page.waitForSelector('[name="checkout"]');
 
     //await page.click('[name="checkout"]');
 
     await Promise.all([
-   page.waitForNavigation({ waitUntil: 'networkidle0' }),
+   page.waitForNavigation({ waitUntil: 'load' }),
     page.click('[name="checkout"]'),
   ]);
-
+  logWithTimestamp("submitting address...");
   for (let key in formData) {
       if(key === 'productUrl' || key === 'shoeSize') continue;
 
@@ -37,6 +79,7 @@ async function runScript(formData) {
         continue;
       }
       if(key === 'number' ){
+        logWithTimestamp("Filling out card details...");
         const cardNumberFrameHandle = await page.waitForSelector('iframe.card-fields-iframe[title="Field container for: Card number"]');
         const cardNumberFrame = await cardNumberFrameHandle.contentFrame();
         await cardNumberFrame.waitForSelector('input')
@@ -73,10 +116,18 @@ async function runScript(formData) {
      await page.click('[name="'+key+'"]')
      await page.type('[name="'+key+'"]',formData[key])
 }
- 
+  logWithTimestamp("submitting payment info address...");
+  await page.click('[name=RememberMe]');
+  const price = await page.$eval('strong._19gi7yt0._19gi7ytk._19gi7ytj._1fragempi._19gi7yt12._19gi7yt1a._19gi7yt1l.notranslate', element => element.textContent);
+  logWithTimestamp(`total price: ${price}`);
     await page.click('[id^="DeprecatedCheckbox"]');
-    await page.click('#checkout-pay-button');
-
+    taskSpeed = ((performance.now() - start)/1000).toFixed(2);
+    logWithTimestamp(`Task Speed: ${taskSpeed}`);
+    await Promise.all([
+    page.waitForNavigation({ waitUntil: 'load' }),
+    page.click('#checkout-pay-button'),
+  ]);
+  page.close();
 
 }
 
@@ -85,5 +136,3 @@ async function runScript(formData) {
 //   console.log('Detected target page, pausing...');
 //   await page.waitForTimeout(10000); // pause 10 seconds
 // }
-
-module.exports = runScript;
