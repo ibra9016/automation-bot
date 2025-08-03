@@ -49,6 +49,7 @@ exports.runScript = async(formData)=>{
   logWithTimestamp("Adding item to cart....");
 
   await page.goto(formData.productUrl);
+
    start = performance.now();
    
   await page.waitForSelector('label[for="'+formData.shoeSize+'"]');

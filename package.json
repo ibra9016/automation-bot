@@ -5,8 +5,7 @@
     "ws": "^8.18.3"
   },
   "scripts": {
-    "start": "electron .",
-    "dev": "nodemon --exec electron ."
+    "start": "electron ."
   },
   "main": "main.js"
 }
