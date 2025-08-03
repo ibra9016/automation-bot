@@ -23,6 +23,8 @@ exports.getAvailableSizes = async (productUrl)=> {
       value: label.getAttribute('for')
     }))
 );
+
+console.log(sizes);
   // Send to renderer via IPC
   if (winRef) {
     winRef.webContents.send('available-sizes', sizes);
@@ -50,10 +52,10 @@ exports.runScript = async(formData)=>{
    start = performance.now();
    logWithTimestamp("Adding item to cart....");
 
-  await page.waitForSelector('label[for="option-0-'+formData.shoeSize+'"]');
+  await page.waitForSelector('label[for="'+formData.shoeSize+'"]');
 
 // Click the element
-    await page.click('label[for="option-0-'+formData.shoeSize+'"]');
+    await page.click('label[for="'+formData.shoeSize+'"]');
 
     await page.click(".ProductForm__AddToCart");
 
