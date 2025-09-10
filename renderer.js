@@ -21,21 +21,19 @@ ipcRenderer.on('available-sizes', (event, sizes) => {
 
 function displayLog(message) {
 
-  // Get the container element where you want to add the log messages
   const logContainer = document.getElementById('log-output');
 
-  // Create a new div element
+ 
   const logEntry = document.createElement('div');
   logEntry.textContent = message;
-  logEntry.className = "log-entry"; // Add a class for styling
+  logEntry.className = "log-entry";
 
-  // Append the new div to the container
+
   logContainer.appendChild(logEntry);
 }
 
 function collectFormData() {
     
-  // Get form elements by their IDs
    const productUrl = document.getElementById('productUrl').value.trim();
    const shoeSize = document.getElementById('shoeSize').value;
    const firstName = document.getElementById('firstName').value.trim();
@@ -78,15 +76,13 @@ function collectFormData() {
   const submitBtn = document.getElementById('submitBtn');
   const log = document.getElementById("log-output");
 
-  // Enable/disable button based on form validity
   function toggleButton() {
     submitBtn.disabled = !form.checkValidity();
   }
 
-  // Listen for input events on the entire form
   form.addEventListener('input', toggleButton);
 
-  // Initial check
+
   toggleButton();
 
 form.addEventListener('submit',(e)=>{
@@ -101,5 +97,5 @@ document.getElementById('productUrl').addEventListener('paste', (event) => {
     console.log("Pasted URL:", url);
     
     ipcRenderer.send('run-size-search', url);
-  }, 50); // Delay to ensure the pasted value is available
+  }, 50); 
 });
